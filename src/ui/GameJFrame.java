@@ -46,16 +46,14 @@ public class GameJFrame extends JFrame implements KeyListener {
             if (tmpArray[i] == 0) {
                 x = i / 4;
                 y = i % 4;
-            } else {
-                data[i / 4][i % 4] = tmpArray[index++];
             }
-
+            data[i / 4][i % 4] = tmpArray[index++];
         }
     }
 
     //初始化图片
     private void initImage() {
-        //this.getContentPane().removeAll();
+        this.getContentPane().removeAll();
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 //创建一个图片ImageIcon的对象image/girl/girl1/1.jpg
@@ -74,7 +72,7 @@ public class GameJFrame extends JFrame implements KeyListener {
         background.setBounds(40, 40, 508, 560);
 
         this.getContentPane().add(background);
-        //this.getContentPane().repaint();
+        this.getContentPane().repaint();
     }
 
     //初始化菜单
@@ -144,10 +142,10 @@ public class GameJFrame extends JFrame implements KeyListener {
             System.out.println("向左");
         } else if (code == 38) {
             System.out.println("向上");
-            //data[x][y] = data[x + 1][y];
-            //data[x + 1][y] = 0;
-           // x++;
-           // initImage();
+            data[x][y] = data[x + 1][y];
+            data[x + 1][y] = 0;
+            x++;
+            initImage();
         } else if (code == 39) {
             System.out.println("向右");
         } else if (code == 40) {
