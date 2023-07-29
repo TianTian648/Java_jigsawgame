@@ -258,6 +258,25 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
             new LoginJFrame();
         } else if (source == closeItem) {
             System.exit(0);
+        } else if (source == accountItem) {
+            //新建对象
+            JDialog jDialog = new JDialog();
+            //新建容器对象
+            JLabel jLabel = new JLabel(new ImageIcon("image/Cat.jpg"));
+            //设置容器大小和位置
+            jLabel.setBounds(0,0,258,258);
+            //添加label
+            jDialog.getContentPane().add(jLabel);
+            //设置插件大小
+            jDialog.setSize(344,344);
+            //让弹框置顶
+            jDialog.setAlwaysOnTop(true);
+            //让弹框居中
+            jDialog.setLocationRelativeTo(null);
+            //让弹框不关闭就无法操作
+            jDialog.setModal(true);
+            //显示弹框
+            jDialog.setVisible(true);
 
         }
     }
