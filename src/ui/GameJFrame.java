@@ -27,11 +27,16 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
     String path = "image/girl/girl3";
 
     //创建选项下面的条目对象
+
     JMenuItem replayItem = new JMenuItem("重新游戏");
     JMenuItem reLoginItem = new JMenuItem("重新登录");
     JMenuItem closeItem = new JMenuItem("关闭游戏");
 
     JMenuItem accountItem = new JMenuItem("推广码");
+
+    JMenuItem girl = new JMenuItem("美女");
+    JMenuItem animal = new JMenuItem("动物");
+    JMenuItem sport = new JMenuItem("运动");
 
     //空参构造方法
     public GameJFrame() {
@@ -106,31 +111,42 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
 
     //初始化菜单
     private void JMenuBar() {
+
         //创建整个菜单对象
         JMenuBar jMenuBar = new JMenuBar();
 
-        //创建菜单上的两个初始选项(功能 关于我们)
+        //创建菜单上的两个初始选项(功能 关于我们)和一个子功能 更换图片
         JMenu functionJmenu = new JMenu("功能");
         JMenu aboutJmenu = new JMenu("关于我们");
 
+        //更换图片功能
+        JMenu changeImage = new JMenu("更换图片");
         //把每个选项下的小条目关联到选项中
+        functionJmenu.add(changeImage);
         functionJmenu.add(replayItem);
         functionJmenu.add(reLoginItem);
         functionJmenu.add(closeItem);
 
         aboutJmenu.add(accountItem);
 
+        changeImage.add(girl);
+        changeImage.add(animal);
+        changeImage.add(sport);
         //关联鼠标器
         replayItem.addActionListener(this);
         reLoginItem.addActionListener(this);
         closeItem.addActionListener(this);
         accountItem.addActionListener(this);
+        //关联ActionListener
+        girl.addActionListener(this);
+        animal.addActionListener(this);
+        sport.addActionListener(this);
         //将菜单里面的两个选项添加到菜单中
         jMenuBar.add(functionJmenu);
         jMenuBar.add(aboutJmenu);
 
         //给整个界面设置菜单
-        setJMenuBar(jMenuBar);
+        this.setJMenuBar(jMenuBar);
     }
 
     //初始化界面
@@ -241,6 +257,8 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        Random r = new Random();
+        int index = 0;
         Object source = e.getSource();
         if (source == replayItem) {
             //重新开始游戏
@@ -264,11 +282,11 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
             //新建容器对象
             JLabel jLabel = new JLabel(new ImageIcon("image/Cat.jpg"));
             //设置容器大小和位置
-            jLabel.setBounds(0,0,258,258);
+            jLabel.setBounds(0, 0, 258, 258);
             //添加label
             jDialog.getContentPane().add(jLabel);
             //设置插件大小
-            jDialog.setSize(344,344);
+            jDialog.setSize(344, 344);
             //让弹框置顶
             jDialog.setAlwaysOnTop(true);
             //让弹框居中
@@ -277,7 +295,45 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
             jDialog.setModal(true);
             //显示弹框
             jDialog.setVisible(true);
-
+        } else if (source == girl) {
+            //girl 13选1
+            // 照片的序号
+            index = r.nextInt(13) + 1;
+            //更改path
+            path = "image/girl/girl" + index;
+            //重新开始游戏
+            //计数器清零
+            count = 0;
+            //重新打乱数据
+            initData();
+            //重新加载图片
+            initImage();
+        } else if (source == animal) {
+            // animal 8选1
+            // 照片的序号
+            index = r.nextInt(8) + 1;
+            //更改path
+            path = "image/animal/animal" + index;
+            //重新开始游戏
+            //计数器清零
+            count = 0;
+            //重新打乱数据
+            initData();
+            //重新加载图片
+            initImage();
+        } else if (source == sport) {
+            //sport 10选1
+            // 照片的序号
+            index = r.nextInt(10) + 1;
+            //更改path
+            path = "image/sport/sport" + index;
+            //重新开始游戏
+            //计数器清零
+            count = 0;
+            //重新打乱数据
+            initData();
+            //重新加载图片
+            initImage();
         }
     }
 }
