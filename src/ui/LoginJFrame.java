@@ -3,10 +3,11 @@ package ui;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import User.User;
+import Domain.User;
 import cn.hutool.core.io.FileUtil;
 import util.CodeUtil;
 
@@ -176,7 +177,13 @@ public class LoginJFrame extends JFrame implements MouseListener {
                 this.setVisible(false);
                 //打开游戏的主界面
                 //需要把当前登录的用户名传递给游戏界面
-                new GameJFrame();
+                try {
+                    new GameJFrame();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
             } else {
                 showJDialog("用户名或密码错误");
             }

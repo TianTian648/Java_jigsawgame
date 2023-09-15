@@ -1,13 +1,18 @@
 package ui;
 
+import Domain.GameInfo;
+
+
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.SQLOutput;
+import java.io.*;
+import java.util.Properties;
 import java.util.Random;
+
 
 public class GameJFrame extends JFrame implements KeyListener, ActionListener {
     //管理数据加载图片的时候使用
@@ -32,6 +37,22 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
     JMenuItem reLoginItem = new JMenuItem("重新登录");
     JMenuItem closeItem = new JMenuItem("关闭游戏");
 
+    JMenu saveJMenu = new JMenu("存档");
+    JMenu loadJMenu = new JMenu("读档");
+
+    JMenuItem saveItem0 = new JMenuItem("存档0(空)");
+    JMenuItem saveItem1 = new JMenuItem("存档1(空)");
+    JMenuItem saveItem2 = new JMenuItem("存档2(空)");
+    JMenuItem saveItem3 = new JMenuItem("存档3(空)");
+    JMenuItem saveItem4 = new JMenuItem("存档4(空)");
+
+    JMenuItem loadItem0 = new JMenuItem("读档0(空)");
+    JMenuItem loadItem1 = new JMenuItem("读档1(空)");
+    JMenuItem loadItem2 = new JMenuItem("读档2(空)");
+    JMenuItem loadItem3 = new JMenuItem("读档3(空)");
+    JMenuItem loadItem4 = new JMenuItem("读档4(空)");
+
+
     JMenuItem accountItem = new JMenuItem("推广码");
 
     JMenuItem girl = new JMenuItem("美女");
@@ -39,7 +60,7 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
     JMenuItem sport = new JMenuItem("运动");
 
     //空参构造方法
-    public GameJFrame() {
+    public GameJFrame() throws IOException, ClassNotFoundException {
 
         //初始化界面
         initJFrame();
@@ -110,7 +131,7 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
     }
 
     //初始化菜单
-    private void JMenuBar() {
+    private void JMenuBar() throws IOException, ClassNotFoundException {
 
         //创建整个菜单对象
         JMenuBar jMenuBar = new JMenuBar();
@@ -121,11 +142,27 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
 
         //更换图片功能
         JMenu changeImage = new JMenu("更换图片");
+
+        //把5个存档，添加到saveJMenu中
+        saveJMenu.add(saveItem0);
+        saveJMenu.add(saveItem1);
+        saveJMenu.add(saveItem2);
+        saveJMenu.add(saveItem3);
+        saveJMenu.add(saveItem4);
+
+        //把5个读档，添加到loadJMenu中
+        loadJMenu.add(loadItem0);
+        loadJMenu.add(loadItem1);
+        loadJMenu.add(loadItem2);
+        loadJMenu.add(loadItem3);
+        loadJMenu.add(loadItem4);
         //把每个选项下的小条目关联到选项中
         functionJmenu.add(changeImage);
         functionJmenu.add(replayItem);
         functionJmenu.add(reLoginItem);
         functionJmenu.add(closeItem);
+        functionJmenu.add(saveJMenu);
+        functionJmenu.add(loadJMenu);
 
         aboutJmenu.add(accountItem);
 
@@ -137,6 +174,16 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
         reLoginItem.addActionListener(this);
         closeItem.addActionListener(this);
         accountItem.addActionListener(this);
+        saveItem0.addActionListener(this);
+        saveItem1.addActionListener(this);
+        saveItem2.addActionListener(this);
+        saveItem3.addActionListener(this);
+        saveItem4.addActionListener(this);
+        loadItem0.addActionListener(this);
+        loadItem1.addActionListener(this);
+        loadItem2.addActionListener(this);
+        loadItem3.addActionListener(this);
+        loadItem4.addActionListener(this);
         //关联ActionListener
         girl.addActionListener(this);
         animal.addActionListener(this);
@@ -145,6 +192,7 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
         jMenuBar.add(functionJmenu);
         jMenuBar.add(aboutJmenu);
 
+        getNameInfo();
         //给整个界面设置菜单
         this.setJMenuBar(jMenuBar);
     }
@@ -263,11 +311,7 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
         if (source == replayItem) {
             //重新开始游戏
             //计数器清零
-            count = 0;
-            //重新打乱数据
-            initData();
-            //重新加载图片
-            initImage();
+            remake();
         } else if (source == reLoginItem) {
             //退回登陆界面咯
             //先隐藏当前界面
@@ -277,10 +321,21 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
         } else if (source == closeItem) {
             System.exit(0);
         } else if (source == accountItem) {
+            Properties properties = new Properties();
+            File file = new File("game.properties");
+            try {
+                FileReader fr = new FileReader(file);
+                properties.load(fr);
+                fr.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            String account = (String) properties.get("account");
+
             //新建对象
             JDialog jDialog = new JDialog();
             //新建容器对象
-            JLabel jLabel = new JLabel(new ImageIcon("image/Cat.jpg"));
+            JLabel jLabel = new JLabel(new ImageIcon(account));
             //设置容器大小和位置
             jLabel.setBounds(0, 0, 258, 258);
             //添加label
@@ -301,13 +356,7 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
             index = r.nextInt(13) + 1;
             //更改path
             path = "image/girl/girl" + index;
-            //重新开始游戏
-            //计数器清零
-            count = 0;
-            //重新打乱数据
-            initData();
-            //重新加载图片
-            initImage();
+            remake();
         } else if (source == animal) {
             // animal 8选1
             // 照片的序号
@@ -316,11 +365,7 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
             path = "image/animal/animal" + index;
             //重新开始游戏
             //计数器清零
-            count = 0;
-            //重新打乱数据
-            initData();
-            //重新加载图片
-            initImage();
+            remake();
         } else if (source == sport) {
             //sport 10选1
             // 照片的序号
@@ -329,11 +374,78 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
             path = "image/sport/sport" + index;
             //重新开始游戏
             //计数器清零
-            count = 0;
-            //重新打乱数据
-            initData();
-            //重新加载图片
+            remake();
+        } else if (source == saveItem0 || source == saveItem1 || source == saveItem2 || source == saveItem3 || source == saveItem4) {
+            JMenuItem item = (JMenuItem) source;
+            //System.out.println(item.getText());
+            String s = item.getText();
+            int x = Integer.parseInt(String.valueOf(s.charAt(2)));
+            String str = "存档" + x + "(" + count + ")";
+            item.setText(str);
+            loadJMenu.getItem(x).setText("读档" + x + "(" + count + ")");
+            GameInfo gameInfo = new GameInfo(data, x, y, count, path);
+            try {
+                save(gameInfo, x);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        } else if (source == loadItem0 || source == loadItem1 || source == loadItem2 || source == loadItem3 || source == loadItem4) {
+            JMenuItem item = (JMenuItem) source;
+            String s = item.getText();
+            int x = Integer.parseInt(String.valueOf(s.charAt(2)));
+            GameInfo gameInfo;
+            try {
+                gameInfo = load(x);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+            this.path = gameInfo.getPath();
+            this.count = gameInfo.getCount();
+            this.x = gameInfo.getX();
+            this.y = gameInfo.getY();
+            this.data = gameInfo.getData();
             initImage();
+        }
+    }
+
+    private static GameInfo load(int x) throws IOException, ClassNotFoundException {
+        File file = new File("save/" + x + ".data");
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+        GameInfo gameInfo = (GameInfo) ois.readObject();
+        ois.close();
+        return gameInfo;
+    }
+
+    private void save(GameInfo gameInfo, int x) throws IOException {
+        File file = new File("save/" + x + ".data");
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
+        oos.writeObject(gameInfo);
+        oos.close();
+    }
+
+    private void remake() {
+        //重新开始游戏
+        //计数器清零
+        count = 0;
+        //重新打乱数据
+        initData();
+        //重新加载图片
+        initImage();
+    }
+
+    //获取存档信息
+    private void getNameInfo() throws IOException, ClassNotFoundException {
+        File file = new File("save");
+        File[] files = file.listFiles();
+        for (File file1 : files) {
+            int i = Integer.parseInt(file1.getName().split("\\.")[0]);
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file1));
+            GameInfo gameInfo = (GameInfo) ois.readObject();
+            int count = gameInfo.getCount();
+            loadJMenu.getItem(i).setText("读档" + count + "(" + count + ")");
+            saveJMenu.getItem(i).setText("存档" + count + "(" + count + ")");
         }
     }
 }

@@ -1,2 +1,2 @@
-User=zhangsan&password=123
-User=lisi&password=6
+Domain=zhangsan&password=123
+Domain=lisi&password=6

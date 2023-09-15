@@ -1,6 +1,6 @@
 package ui;
 
-import User.User;
+import Domain.User;
 import cn.hutool.core.io.FileUtil;
 
 import javax.swing.*;
