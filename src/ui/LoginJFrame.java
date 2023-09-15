@@ -1,23 +1,18 @@
 package ui;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import User.User;
+import cn.hutool.core.io.FileUtil;
 import util.CodeUtil;
 
 public class LoginJFrame extends JFrame implements MouseListener {
-    static ArrayList<User> allUsers = new ArrayList<>();
+    ArrayList<User> allUsers = new ArrayList<>();
 
-    static {
-        allUsers.add(new User("chamber", "123"));
-        allUsers.add(new User("kano",
-                "456"));
-    }
     //创建登陆和注册按钮
     JButton login = new JButton();
     JButton register = new JButton();
@@ -30,10 +25,22 @@ public class LoginJFrame extends JFrame implements MouseListener {
     JLabel rightCode = new JLabel();
 
     public LoginJFrame() {
+        //读取用户信息并添加到集合中
+        readUserInfo();
         initFrame();
         initView();
         //显示界面
         setVisible(true);
+    }
+
+    private void readUserInfo() {
+        List<String> list = FileUtil.readLines("C:\\Users\\xietian\\Desktop\\Java_jigsawgame\\userInfo.txt", "UTF-8");
+        for (String s : list) {
+            String rightUsername = s.split("&")[0].split("=")[1];
+            String rightPassword = s.split("&")[1].split("=")[1];
+            User user = new User(rightUsername, rightPassword);
+            allUsers.add(user);
+        }
     }
 
     private void initView() {
@@ -155,7 +162,7 @@ public class LoginJFrame extends JFrame implements MouseListener {
             String usernameInput = username.getText();
             String passwordInput = password.getText();
             String codeInput = code.getText();
-            User userInput = new User(usernameInput, passwordInput);
+            User userInput = new User(usernameInput, passwordInput );
             if (codeInput.length() == 0) {
                 showJDialog("验证码不能为空");
             } else if (usernameInput.length() == 0 || passwordInput.length() == 0) {
@@ -174,7 +181,8 @@ public class LoginJFrame extends JFrame implements MouseListener {
                 showJDialog("用户名或密码错误");
             }
         } else if (e.getSource() == register) {
-            System.out.println("点击了注册按钮");
+            this.setVisible(false);
+            new RegisterJFrame(allUsers);
         } else if (e.getSource() == rightCode ) {
             String code = CodeUtil.getCode();
             rightCode.setText(code);
